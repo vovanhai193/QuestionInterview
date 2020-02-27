@@ -26,7 +26,10 @@ class QuestionsController < ApplicationController
   end
 
   def question5
-
+    logger = MultiLogger.new(STDOUT, 'logfile.log', MailLogger)
+    logger.info "This is info log"
+    logger.warn "This is warn log"
+    logger.debug "This is debug log"
   end
 
   private

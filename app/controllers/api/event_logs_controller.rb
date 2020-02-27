@@ -2,9 +2,9 @@ class Api::EventLogsController < ApplicationController
   def create
     if params[:event_name] && params[:timestamp]
       EventLogsWorker.perform_async(params[:event_name], params[:timestamp])
-      render json: {}
+      render json: {status: :ok}
     else
-      render json: {error: "No parameter"}, status: :bad_request
+      render json: {status: :bad_request}
     end
   end
 end
