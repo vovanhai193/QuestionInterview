@@ -1,6 +1,3 @@
-require_relative 'logger/severity'
-require_relative 'logger/log_device'
-
 class MultiLogger
   include Severity
 
@@ -8,7 +5,7 @@ class MultiLogger
 
   def initialize(*logdevs, level: DEBUG)
     @level = level
-    @logdevs = logdevs
+    @logdevs = logdevs.map{ |logdev| LogDevice.new(logdev) }
   end
 
   def add(logdev, severity, message = nil)
@@ -20,33 +17,11 @@ class MultiLogger
     true
   end
 
-  def info(&block)
-    @logdevs.each do |logdev|
-      add(LogDevice.new(logdev), INFO, &block)
-    end
-  end
-
-  def warn(&block)
-    @logdevs.each do |logdev|
-      add(LogDevice.new(logdev), WARN, &block)
-    end
-  end
-
-  def error(&block)
-    @logdevs.each do |logdev|
-      add(LogDevice.new(logdev), ERROR, &block)
-    end
-  end
-
-  def fatal(&block)
-    @logdevs.each do |logdev|
-      add(LogDevice.new(logdev), FATAL, &block)
-    end
-  end
-
-  def unknown(&block)
-    @logdevs.each do |logdev|
-      add(LogDevice.new(logdev), UNKNOWN, &block)
+  %w[info warn error fatal unknown].each do |method_name|
+    define_method method_name do |message|
+      @logdevs.each do |logdev|
+        add(logdev, Severity.const_get(method_name.upcase), message)
+      end
     end
   end
 

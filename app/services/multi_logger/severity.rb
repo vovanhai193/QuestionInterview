@@ -1,4 +1,4 @@
-module Logger
+class MultiLogger
   module Severity
     DEBUG = 0
     INFO = 1

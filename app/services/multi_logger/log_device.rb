@@ -1,4 +1,4 @@
-module Logger
+class MultiLogger
   class LogDevice
     attr_reader :dev
 
